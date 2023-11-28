@@ -1,0 +1,86 @@
+
+version: 2
+
+sources:
+  - name: gsheets
+    database: guardianleaguetables
+    description: "Development database to store all things around rankings projects"
+    tables:
+      - name: ranking
+        description: "A raw ranking table"
+        external:
+          options:
+            format: GOOGLE_SHEETS
+            uris: ['https://docs.google.com/spreadsheets/d/18DN9UyRcGxqw13j09iW9Wp0rlK1k4JL1LesPiidP5I4']
+            skip_leading_rows: 1
+            sheet_range: 'The Guardian Ranking'
+
+      - name: subjectareas
+        description: "A raw subjectareas table"
+        external:
+          options:
+            format: GOOGLE_SHEETS
+            uris: ['https://docs.google.com/spreadsheets/d/18DN9UyRcGxqw13j09iW9Wp0rlK1k4JL1LesPiidP5I4']
+            sheet_range: 'The Guardian - Subject Areas'
+            skip_leading_rows: 1
+
+models:
+  - name: stg_ranking
+    description: "Cleaned main ranking table"
+    columns:
+      - name: institution
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+      - name: ranking_uni
+        description: "Ranking place at the year"
+      - name: score_uni
+        description: "Rating of excellence based on a combination of all the other factors"
+      - name: spend_uni
+        description: "Money spent on each student, excluding academic staff costs, given as a rating out of 10"
+      - name: ratio_uni
+        description: "Number of students per member of teaching staff"
+      - name: career_uni
+        description: "Percentage of graduatees who find graduate-level jobs within 6 months after graduation"
+      - name: values_score_uni,
+        description: "This score compares students’ degree results with their entry qualifications, to show how effectively they are taught. It is given as a rating out of 10"
+      - name: tariff_uni,
+        description: "Typical Ucas scores of young entrants (under 21) to the department"
+      - name: nss_teaching_uni
+        description: "The rating for the quality of teaching on the course, given by final-year students in the NSS"
+      - name: nss_feedback_uni
+        description: "The rating for the quality of feedback and assessment, given by final-year students in the NSS"
+
+  - name: stg_subjectareas
+    description: "Cleaned courses table"
+    columns:
+      - name: institution
+        description: "University"
+        tests:
+          - unique
+          - not_null
+      - name: course
+        description: "Subject area, course"
+        tests:
+          - not_null
+      - name: ranking
+        description: "Ranking place at the year"
+      - name: score
+        description: "Rating of excellence based on a combination of all the other factors"
+      - name: spend
+        description: "Money spent on each student, excluding academic staff costs, given as a rating out of 10"
+      - name: ratio
+        description: "Number of students per member of teaching staff"
+      - name: career
+        description: "Percentage of graduatees who find graduate-level jobs within 6 months after graduation"
+      - name: values_score,
+        description: "This score compares students’ degree results with their entry qualifications, to show how effectively they are taught. It is given as a rating out of 10"
+      - name: tariff
+        description: "Typical Ucas scores of young entrants (under 21) to the department"
+      - name: nss_teaching
+        description: "The rating for the quality of teaching on the course, given by final-year students in the NSS"
+      - name: nss_overall
+        description: "The rating for the overall quality of the course, given by final-year students in the latest National Student Survey (NSS), recorded as a percentage"
+      - name: nss_feedback
+        description: "The rating for the quality of feedback and assessment, given by final-year students in the NSS"
