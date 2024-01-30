@@ -1,0 +1,62 @@
+name: Deploy dbt docs to Google AppEngine
+
+env:
+  DBT_PROFILES_DIR: ./.github/
+  DBT_GOOGLE_PROJECT_PROD: ${{ secrets.DBT_GOOGLE_PROJECT_PROD }}
+  DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
+  # The DBT_GOOGLE_BIGQUERY_KEYFILE_PROD secret will be written to a json file below
+  DBT_GOOGLE_BIGQUERY_KEYFILE_PROD: ./service-account.json
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy-docs:
+    name: Deploy dbt docs to Google AppEngine
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Get SA keyfile
+      run: 'echo "$KEYFILE" > ./service-account.json'
+      shell: bash
+      env:
+        KEYFILE: ${{ secrets.DBT_GOOGLE_BIGQUERY_KEYFILE_PROD }}
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9.x'
+
+    - name: Install deps
+      run: |
+        pip install -r requirements.txt
+        dbt deps
+
+    - name: Generate dbt docs
+      run: |
+        dbt docs generate
+
+    - name: Combine dbt docs artifacts into single file
+      run: |
+        python glue-dbt-artifacts.py
+
+    - name: Authenticate with SA
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GOOGLE_APP_ENGINE_DEPLOY_KEY }}'
+
+    - name: Deploy to AppEngine
+      uses: 'google-github-actions/deploy-appengine@v1'
+      with:
+        project_id: 'gcp-project-name'
+        flags: '--quiet'
