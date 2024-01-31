@@ -7,7 +7,6 @@ env:
   # The DBT_GOOGLE_BIGQUERY_KEYFILE_PROD secret will be written to a json file below
   DBT_GOOGLE_BIGQUERY_KEYFILE_PROD: ./service-account.json
 
-# Controls when the workflow will run
 on:
   push:
     branches:
