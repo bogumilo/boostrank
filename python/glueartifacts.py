@@ -15,7 +15,7 @@ with open(os.path.join(PATH_DBT_PROJECT, 'target', 'manifest.json'), 'r') as f:
 # In the static website there are 2 more projects inside the documentation: dbt and dbt_bigquery
 # This is technical information that we don't want to provide to our final users, so we drop it
 # Note: depends of the connector, here we use BigQuery
-IGNORE_PROJECTS = ['dbt', 'dbt_bigquery']
+IGNORE_PROJECTS = ['dbt_bigquery']
 for element_type in ['nodes', 'sources', 'macros', 'parent_map', 'child_map']:  # navigate into manifest
     # We transform to list to not change dict size during iteration, we use default value {} to handle KeyError
     for key in list(json_manifest.get(element_type, {}).keys()):
@@ -26,7 +26,7 @@ for element_type in ['nodes', 'sources', 'macros', 'parent_map', 'child_map']:  
 with open(os.path.join(PATH_DBT_PROJECT, 'target', 'catalog.json'), 'r') as f:
     json_catalog = json.loads(f.read())
 
-with open(os.path.join(PATH_DBT_PROJECT, 'target', 'index2.html'), 'w') as f:
+with open(os.path.join(PATH_DBT_PROJECT, 'my-docs', 'public', 'index2.html'), 'w') as f:
     new_str = "n=[{label: 'manifest', data: "+json.dumps(json_manifest)+"},{label: 'catalog', data: "+json.dumps(json_catalog)+"}]"
     new_content = content_index.replace(search_str, new_str)
     f.write(new_content)
