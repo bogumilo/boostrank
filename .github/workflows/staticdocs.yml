@@ -1,10 +1,9 @@
 name: Deploy dbt docs to Google AppEngine
 
 env:
-  DBT_PROFILES_DIR: ./.github/
+  DBT_PROFILES_DIR: ./
   DBT_GOOGLE_PROJECT_PROD: ${{ secrets.DBT_GOOGLE_PROJECT_PROD }}
   DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
-  # The DBT_GOOGLE_BIGQUERY_KEYFILE_PROD secret will be written to a json file below
   DBT_GOOGLE_BIGQUERY_KEYFILE_PROD: ./service-account.json
 
 on:
@@ -47,7 +46,7 @@ jobs:
 
     - name: Combine dbt docs artifacts into single file
       run: |
-        python glue-dbt-artifacts.py
+        python python/glueartifacts.py
 
     - name: Authenticate with SA
       uses: 'google-github-actions/auth@v1'
@@ -57,5 +56,5 @@ jobs:
     - name: Deploy to AppEngine
       uses: 'google-github-actions/deploy-appengine@v1'
       with:
-        project_id: 'gcp-project-name'
+        project_id: '${{ secrets.DBT_GOOGLE_PROJECT_PROD }}'
         flags: '--quiet'

@@ -1,11 +1,11 @@
 service: default
-runtime: python310
+runtime: python311
 
 handlers:
 
 - url: /
-  static_files: public/index.html
-  upload: public/index.html
+  static_files: public/index2.html
+  upload: public/index2.html
 
 - url: /
   static_dir: public
