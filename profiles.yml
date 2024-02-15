@@ -1,0 +1,25 @@
+boostrank_dbt_project:
+  target: dev
+  outputs:
+    dev:
+      dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_DEV') }}"
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE_PROD') }}"
+      location: US
+      method: service-account
+      priority: interactive
+      project: "{{ env_var('DBT_GOOGLE_PROJECT_DEV') }}"
+      threads: 4
+      type: bigquery
+    prod:
+      dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_PROD') }}"
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile_json: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE_PROD' | as_native) }}"
+      location: US
+      method: service-account-json
+      priority: interactive
+      project: "{{ env_var('DBT_GOOGLE_PROJECT_PROD') }}"
+      threads: 4
+      type: bigquery
