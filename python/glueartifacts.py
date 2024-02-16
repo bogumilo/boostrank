@@ -26,7 +26,7 @@ for element_type in ['nodes', 'sources', 'macros', 'parent_map', 'child_map']:  
 with open(os.path.join(PATH_DBT_PROJECT, 'target', 'catalog.json'), 'r') as f:
     json_catalog = json.loads(f.read())
 
-with open(os.path.join(PATH_DBT_PROJECT, 'my-docs', 'public', 'index2.html'), 'w') as f:
+with open(os.path.join(PATH_DBT_PROJECT, 'my-docs', 'index2.html'), 'w') as f:
     new_str = "n=[{label: 'manifest', data: "+json.dumps(json_manifest)+"},{label: 'catalog', data: "+json.dumps(json_catalog)+"}]"
     new_content = content_index.replace(search_str, new_str)
     f.write(new_content)

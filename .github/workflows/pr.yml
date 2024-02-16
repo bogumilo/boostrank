@@ -1,15 +1,15 @@
-name: Deploy dbt docs to Google AppEngine
+name: On PR
 
 on:
-  push:
+  pull_request:
     branches:
       - main
   workflow_dispatch:
 
 env:
   DBT_PROFILES_DIR: ./
-  DBT_GOOGLE_PROJECT_PROD: ${{ secrets.DBT_GOOGLE_PROJECT_PROD }}
-  DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
+  DBT_GOOGLE_PROJECT_CI: ${{ secrets.DBT_GOOGLE_PROJECT_CI }}
+  DBT_GOOGLE_BIGQUERY_DATASET_CI: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_CI }}
 
   BIGQUERY_KEYFILE_JSON_TYPE: ${{ secrets.BIGQUERY_KEYFILE_JSON_TYPE }}
   BIGQUERY_KEYFILE_JSON_PROJECT_ID: ${{ secrets.BIGQUERY_KEYFILE_JSON_PROJECT_ID }}
@@ -23,12 +23,9 @@ env:
   BIGQUERY_KEYFILE_JSON_CLIENT_X509_CERT_URL: ${{ secrets.BIGQUERY_KEYFILE_JSON_TOKEN_URI }}
 
 jobs:
-  deploy-docs:
-    name: Deploy dbt docs to Google AppEngine
+  on_pr:
+    name: PR
     runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
 
     steps:
     - name: Checkout
@@ -44,24 +41,6 @@ jobs:
         pip install dbt-bigquery
         dbt deps
 
-    - name: Generate dbt docs
+    - name: dbt debug --connection
       run: |
-        dbt compile -t prod
-        dbt docs generate -t prod
-
-    - name: Combine dbt docs artifacts into single file
-      run: |
-        python python/glueartifacts.py
-
-    - name: Authenticate with SA
-      uses: 'google-github-actions/auth@v1'
-      with:
-        credentials_json: '${{ secrets.GOOGLE_APP_ENGINE_DEPLOY_KEY }}'
-
-    - name: Deploy to AppEngine
-      uses: 'google-github-actions/deploy-appengine@v1'
-      with:
-        project_id: '${{ secrets.DBT_GOOGLE_PROJECT_PROD }}'
-        flags: '--quiet'
-        promote: true
-        # credentials: '${{ secrets.GOOGLE_APP_ENGINE_DEPLOY_KEY }}'
+        dbt debug --connection -t ci
