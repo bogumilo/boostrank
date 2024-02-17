@@ -4,11 +4,11 @@ runtime: python311
 handlers:
 
 - url: /
-  static_files: my-docs/index2.html
-  upload: my-docs/index2.html
+  static_files: public/index2.html
+  upload: public/index2.html
 
 - url: /
-  static_dir: my-docs
+  static_dir: public
 
 - url: /.*
   secure: always
