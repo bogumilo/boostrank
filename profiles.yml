@@ -3,12 +3,13 @@ boostrank_dbt_project:
   outputs:
     dev:
       type: bigquery
-      method: service-account
-      keyfile: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE_DEV') }}"
       location: US
       project: "{{ env_var('DBT_GOOGLE_PROJECT_DEV') }}"
       dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_DEV') }}"
-      threads: 1
+      threads: 4
+      method: oauth
+      impersonate_service_account: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL') }}"
+      priority: interactive
     ci:
       type: bigquery
       location: US
