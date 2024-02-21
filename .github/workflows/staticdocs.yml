@@ -56,7 +56,8 @@ jobs:
     - name: Authenticate with SA
       uses: 'google-github-actions/auth@v1'
       with:
-        credentials_json: '${{ secrets.GOOGLE_APP_ENGINE_DEPLOY_KEY }}'
+        workload_identity_provider: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
+        service_account: '${{ secrets.GOOGLE_APP_KEYFILE_JSON_CLIENT_EMAIL }}'
 
     - name: Deploy to AppEngine
       uses: 'google-github-actions/deploy-appengine@v1'
