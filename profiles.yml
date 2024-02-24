@@ -7,8 +7,8 @@ boostrank_dbt_project:
       project: "{{ env_var('DBT_GOOGLE_PROJECT_DEV') }}"
       dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_DEV') }}"
       threads: 4
-      method: oauth
-      impersonate_service_account: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL') }}"
+      method: service-account
+      keyfile: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE_DEV' | as_native) }}"
       priority: interactive
     ci:
       type: bigquery
@@ -16,18 +16,8 @@ boostrank_dbt_project:
       project: "{{ env_var('DBT_GOOGLE_PROJECT_CI') }}"
       dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_CI') }}"
       threads: 4
-      method: service-account-json
-      keyfile_json:
-        type: "{{ env_var('BIGQUERY_KEYFILE_JSON_TYPE') }}"
-        project_id: "{{ env_var('BIGQUERY_KEYFILE_JSON_PROJECT_ID') }}"
-        private_key_id: "{{ env_var('BIGQUERY_KEYFILE_JSON_PRIVATE_KEY_ID') }}"
-        client_email: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL') }}"
-        private_key: "{{ env_var('BIGQUERY_KEYFILE_JSON_PRIVATE_KEY') }}"
-        client_id: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_ID') }}"
-        auth_uri: "{{ env_var('BIGQUERY_KEYFILE_JSON_AUTH_URI') }}"
-        token_uri: "{{ env_var('BIGQUERY_KEYFILE_JSON_TOKEN_URI') }}"
-        auth_provider_x509_cert_url: "{{ env_var('BIGQUERY_KEYFILE_JSON_AUTH_PROVIDER_X509_CERT_URL') }}"
-        client_x509_cert_url: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_X509_CERT_URL') }}"
+      method: service-account
+      keyfile: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE_CI' | as_native) }}"
       job_retries: 1
       priority: interactive
     prod:
@@ -36,18 +26,8 @@ boostrank_dbt_project:
       project: "{{ env_var('DBT_GOOGLE_PROJECT_PROD') }}"
       dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_PROD') }}"
       threads: 4
-      method: service-account-json
-      keyfile_json:
-        type: "{{ env_var('BIGQUERY_KEYFILE_JSON_TYPE') }}"
-        project_id: "{{ env_var('BIGQUERY_KEYFILE_JSON_PROJECT_ID') }}"
-        private_key_id: "{{ env_var('BIGQUERY_KEYFILE_JSON_PRIVATE_KEY_ID') }}"
-        client_email: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL') }}"
-        private_key: "{{ env_var('BIGQUERY_KEYFILE_JSON_PRIVATE_KEY') }}"
-        client_id: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_ID') }}"
-        auth_uri: "{{ env_var('BIGQUERY_KEYFILE_JSON_AUTH_URI') }}"
-        token_uri: "{{ env_var('BIGQUERY_KEYFILE_JSON_TOKEN_URI') }}"
-        auth_provider_x509_cert_url: "{{ env_var('BIGQUERY_KEYFILE_JSON_AUTH_PROVIDER_X509_CERT_URL') }}"
-        client_x509_cert_url: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_X509_CERT_URL') }}"
+      method: service-account
+      keyfile: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE_PROD' | as_native) }}"
       job_retries: 1
       priority: interactive
       # impersonate_service_account: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL') }}"
