@@ -3,8 +3,8 @@
 {%- set default_schema = target.schema -%}
 
     {%- if custom_schema_name is not none -%}
-        {%- if custom_schema_name not in ("dataquality") and
-        "ci" in target.name -%}
+        {%- if custom_schema_name not in ("stage, transform") and
+        "audit" in target.name -%}
         unaudited
         {%- else -%}
         {{ custom_schema_name | trim }}
