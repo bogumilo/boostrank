@@ -1,0 +1,66 @@
+name: Schedule
+
+on:
+  schedule:
+    - cron: '20 2 * * 1-5'
+
+env:
+  DBT_PROFILES_DIR: ./
+  DBT_GOOGLE_PROJECT_CI: ${{ secrets.DBT_GOOGLE_PROJECT_CI }}
+  DBT_GOOGLE_BIGQUERY_DATASET_CI: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_CI }}
+
+  BIGQUERY_KEYFILE_JSON_TYPE: ${{ secrets.BIGQUERY_KEYFILE_JSON_TYPE }}
+  BIGQUERY_KEYFILE_JSON_PROJECT_ID: ${{ secrets.BIGQUERY_KEYFILE_JSON_PROJECT_ID }}
+  BIGQUERY_KEYFILE_JSON_PRIVATE_KEY_ID: ${{ secrets.BIGQUERY_KEYFILE_JSON_PRIVATE_KEY_ID }}
+  BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL: ${{ secrets.BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL }}
+  BIGQUERY_KEYFILE_JSON_PRIVATE_KEY: ${{ secrets.BIGQUERY_KEYFILE_JSON_PRIVATE_KEY }}
+  BIGQUERY_KEYFILE_JSON_CLIENT_ID: ${{ secrets.BIGQUERY_KEYFILE_JSON_CLIENT_ID }}
+  BIGQUERY_KEYFILE_JSON_AUTH_URI: ${{ secrets.BIGQUERY_KEYFILE_JSON_AUTH_URI }}
+  BIGQUERY_KEYFILE_JSON_TOKEN_URI: ${{ secrets.BIGQUERY_KEYFILE_JSON_TOKEN_URI}}
+  BIGQUERY_KEYFILE_JSON_AUTH_PROVIDER_X509_CERT_URL: ${{ secrets.BIGQUERY_KEYFILE_JSON_TOKEN_URI }}
+  BIGQUERY_KEYFILE_JSON_CLIENT_X509_CERT_URL: ${{ secrets.BIGQUERY_KEYFILE_JSON_TOKEN_URI }}
+
+jobs:
+  on_preprod:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9.x'
+
+    - name: Install deps
+      run: |
+        pip install dbt-bigquery
+        dbt deps
+
+    - name: dbt debug --connection
+      run: |
+        dbt debug --connection -t ci
+
+  on_prod:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9.x'
+
+    - name: Install deps
+      run: |
+        pip install dbt-bigquery
+        dbt deps
+
+    - name: dbt debug --connection
+      run: |
+        dbt debug --connection -t prod
