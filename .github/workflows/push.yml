@@ -1,10 +1,9 @@
-name: On PR
+name: On Push
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-  workflow_dispatch:
 
 env:
   DBT_PROFILES_DIR: ./
@@ -23,8 +22,8 @@ env:
   BIGQUERY_KEYFILE_JSON_CLIENT_X509_CERT_URL: ${{ secrets.BIGQUERY_KEYFILE_JSON_TOKEN_URI }}
 
 jobs:
-  on_pr:
-    name: PR
+  deploy:
+    name: Push to Prod
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -39,11 +38,11 @@ jobs:
 
     - uses: 'google-github-actions/auth@v2'
       with:
-        credentials_json: ${{ secrets.DBT_GOOGLE_BIGQUERY_KEYFILE_CI }}
+        credentials_json: ${{ secrets.DBT_GOOGLE_BIGQUERY_KEYFILE_PROD }}
 
     - run: |
         pip install dbt-bigquery
         dbt deps
 
     - run: |
-        dbt debug --connection -t ci
+        dbt debug --connection -t prod

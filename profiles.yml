@@ -16,18 +16,16 @@ boostrank_dbt_project:
       project: "{{ env_var('DBT_GOOGLE_PROJECT_CI') }}"
       dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_CI') }}"
       threads: 4
-      method: service-account
-      keyfile: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE_CI' | as_native) }}"
+      method: oauth
       job_retries: 1
       priority: interactive
+      # impersonate_service_account: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL') }}"
     prod:
       type: bigquery
       location: US
       project: "{{ env_var('DBT_GOOGLE_PROJECT_PROD') }}"
       dataset: "{{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_PROD') }}"
       threads: 4
-      method: service-account
-      keyfile: "{{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE_PROD' | as_native) }}"
+      method: oauth
       job_retries: 1
       priority: interactive
-      # impersonate_service_account: "{{ env_var('BIGQUERY_KEYFILE_JSON_CLIENT_EMAIL') }}"
