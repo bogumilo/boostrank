@@ -36,4 +36,5 @@ models:
     staging:
       +materialized: table
     analytics:
+      +tags: ['mart']
       +materialized: table

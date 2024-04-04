@@ -1,10 +1,8 @@
-name: On PR
+name: Schedule
 
 on:
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+  schedule:
+    - cron: '20 2 * * 1-5'
 
 env:
   DBT_PROFILES_DIR: ./
@@ -23,27 +21,46 @@ env:
   BIGQUERY_KEYFILE_JSON_CLIENT_X509_CERT_URL: ${{ secrets.BIGQUERY_KEYFILE_JSON_TOKEN_URI }}
 
 jobs:
-  on_pr:
-    name: PR
+  on_preprod:
     runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+    timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v3
 
-    - uses: actions/setup-python@v4
+    - name: Setup Python
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9.x'
 
-    - uses: 'google-github-actions/auth@v2'
-      with:
-        credentials_json: ${{ secrets.DBT_GOOGLE_BIGQUERY_KEYFILE_CI }}
-
-    - run: |
+    - name: Install deps
+      run: |
         pip install dbt-bigquery
         dbt deps
 
-    - run: |
+    - name: dbt debug --connection
+      run: |
         dbt debug --connection -t ci
+
+  on_prod:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9.x'
+
+    - name: Install deps
+      run: |
+        pip install dbt-bigquery
+        dbt deps
+
+    - name: dbt debug --connection
+      run: |
+        dbt debug --connection -t prod
