@@ -8,6 +8,8 @@ env:
   DBT_PROFILES_DIR: ./
   DBT_GOOGLE_PROJECT_CI: ${{ secrets.DBT_GOOGLE_PROJECT_CI }}
   DBT_GOOGLE_BIGQUERY_DATASET_CI: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_CI }}
+  DBT_GOOGLE_PROJECT_PROD: ${{ secrets.DBT_GOOGLE_PROJECT_PROD }}
+  DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
 
   BIGQUERY_KEYFILE_JSON_TYPE: ${{ secrets.BIGQUERY_KEYFILE_JSON_TYPE }}
   BIGQUERY_KEYFILE_JSON_PROJECT_ID: ${{ secrets.BIGQUERY_KEYFILE_JSON_PROJECT_ID }}
@@ -58,7 +60,7 @@ jobs:
 
     - uses: 'google-github-actions/auth@v2'
       with:
-        credentials_json: ${{ secrets.DBT_GOOGLE_BIGQUERY_KEYFILE_CI }}
+        credentials_json: ${{ secrets.DBT_GOOGLE_BIGQUERY_KEYFILE_PROD }}
 
     - name: Install deps
       run: |
