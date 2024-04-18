@@ -3,6 +3,16 @@ name: Schedule
 on:
   schedule:
     - cron: '20 2 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      on_target:
+        description: Choose the target to be used
+        default: 'ci'
+        options:
+          - ci
+          - prod
+        required: true
+        type: choice
 
 env:
   DBT_PROFILES_DIR: ./
@@ -24,6 +34,7 @@ env:
 
 jobs:
   on_preprod:
+    if: contains(fromJSON('["ci", ""]'), github.event.inputs.on_target)
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -48,6 +59,7 @@ jobs:
         dbt debug --connection -t ci
 
   on_prod:
+    if: contains(fromJSON('["prod", ""]'), github.event.inputs.on_target)
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
